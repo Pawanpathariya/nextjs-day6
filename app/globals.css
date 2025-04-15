@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@layer base {
+  .light {
+    @apply bg-white text-gray-900;
+  }
+
+  .dark {
+    @apply bg-gray-800 text-amber-50;
+  }
+}

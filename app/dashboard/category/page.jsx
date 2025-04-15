@@ -1,15 +1,17 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import DashboardTopbar from '@/app/component/DashboardTopbar' 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/app/component/Sidebar'
 import axios from 'axios'
+import { useTheme } from 'next-themes';
 
 const page = () => {
   const [category,setcategory]= useState('');
   const [categorydata,setcategorydata]= useState([]);
   const [sno,setsno]=useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(()=>{
     loadcategory();
@@ -18,17 +20,18 @@ const page = () => {
   const loadcategory=async()=>{
     let api='/api/product/category';
     const response=await axios.get(api);
-    console.log(response.data)
     setcategorydata(response.data.data);
+    setsno(1);
   }
   
   const handlesubmit= async(e)=>{
       e.preventDefault()
     let api='/api/product/category';  
     const response=await axios.post(api,{category});
-   alert(response.data);
+   alert(response.data.message);
    setcategory('');
-   setsno(sno+1);
+   setShowModal(false);
+   loadcategory();
   }
 
 
@@ -41,38 +44,49 @@ const page = () => {
         </div>
         <div className='w-full lg:w-2/3 lg:max-w-[800px] mt-2'>
           <div className="mt-15">
-          <div className="bg-white p-6 rounded-md shadow-md w-full mt-20 items-center justify-center ">
-            <h2 className="text-2xl font-semibold mb-4 align-center items-center justify-center">Add Category</h2>
-            <form >
-              <div className="mb-4">
-                <label className="block mb-2" htmlFor="category">Enter Category</label>
-                <input type="text" name='category' id="category" className="w-full px-4 py-2 border border-gray-300 rounded-md" value={category} onChange={(e) => setcategory(e.target.value)} />
+
+
+          <div className="bg-white p-6 rounded-md shadow-md w-full mt-20 items-center justify-center " style={{backgroundColor: theme === 'dark' ? '#1A202C' : '#fff'}}>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4" onClick={() => setShowModal(true)}>Add Category</button>
+            
+            {showModal && (
+              <div className="fixed top-20 left-150 bg-opacity-50 flex items-center justify-center ">
+                <div className="bg-white p-6 rounded-md shadow-md w-200 max-w-md z-20" style={{backgroundColor: theme === 'dark' ? '#1A202C' : '#fff'}}>
+                  <h2 className="text-2xl font-semibold mb-4 text-center">Enter Category</h2>
+                  <form>
+                    <div className="mb-4">
+                      <label className="block mb-2" htmlFor="category">Category Name</label>
+                      <input type="text" name='category' id="category" className="w-full px-4 py-2 border border-gray-300 rounded-md" value={category} onChange={(e) => setcategory(e.target.value)} style={{backgroundColor: theme === 'dark' ? '#1A202C' : '#fff'}}/>
+                    </div>
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handlesubmit}>Add</button>
+                  </form>
+                  <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md" onClick={() => setShowModal(false)}>Close</button>
+                </div>
               </div>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handlesubmit}>Add</button>
-            </form>
+            )}
           </div>
-
-
-          <table className='w-full mt-5'>
-            <thead>
-              <tr>
-                <th>Sno.</th>
-                <th>Category</th>
-              </tr>
-            </thead>
-            <tbody>
-              {  
-           
-                categorydata.map((data2,index) => (
-                  <tr key={data2._id} className="border-b border-gray-300 text-center">
-                    <td>{sno+index}</td>
-                    <td className="px-4 py-2">{data2.category}</td>
-                  </tr>
+          <div className="overflow-x-auto">
+            <h1 className='text-2xl font-semibold text-center mb-5' style={{color: theme === 'dark' ? '#fff' : '#000'}}>Our Category</h1>
+            <table className="table-auto w-full text-center border-collapse border border-gray-300" style={{backgroundColor: theme === 'dark' ? '#1A202C' : '#fff'}}>
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-2 border border-gray-300">Sno.</th>
+                  <th className="px-4 py-2 border border-gray-300">Category</th>
+                </tr>
+              </thead>
+              <tbody>
+                {  
+                  categorydata.map((data2,index) => (
+                    <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
+                      <td className="px-4 py-2 border border-gray-300">{sno+index}</td>
+                      <td className="px-4 py-2 border border-gray-300">{data2.category}</td>
+                    </tr>
              
-                ))
-              }
-            </tbody>
-          </table>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
           
               </div>
         </div>

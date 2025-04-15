@@ -3,6 +3,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "next-themes";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,7 +26,18 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* {children} */}
-        <SessionProvider>{children}</SessionProvider>
+
+        <ThemeProvider
+        defaultTheme="system"
+        value={{
+          light: "light",
+          dark: "dark"
+        }}
+        >
+        <SessionProvider>
+          {children}
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
