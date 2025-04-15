@@ -33,6 +33,11 @@ const Sidebar = () => {
                 Insert
               </Link>
             </li>
+            <li>
+              <Link href="/dashboard/category" className="text-white hover:underline text-3xl">
+               Add category
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

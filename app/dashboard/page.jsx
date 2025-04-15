@@ -9,7 +9,9 @@ const page = () => {
   const [product, setProduct] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
   const [sort, setSort] = useState('')
+  const [categorydata,setcategorydata]= useState([]);
 
   useEffect(() => {
     loadData();
@@ -20,8 +22,8 @@ const page = () => {
       const api = "/api/product";
       const response = await axios.get(api);
       const data = response?.data?.data;
-      console.log(data);
       setProduct(data);
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
     } catch (error) {
       console.error(error);
     }
@@ -32,11 +34,11 @@ const page = () => {
   }
 
   const nextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(product.length / itemsPerPage)));
+    setCurrentPage((prevPage) => prevPage + 1);
   }
 
   const prevPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    setCurrentPage((prevPage) => prevPage - 1);
   }
 
   const searchpro = async (e) => {
@@ -45,7 +47,7 @@ const page = () => {
     try {
       let response = await axios.post(api, { proname });
       setProduct(response.data.prod);
-      console.log(response.data.prod);
+      setTotalPages(Math.ceil(response.data.prod.length / itemsPerPage));
     } catch (error) {
       console.log(error.response.data.message);
     }
@@ -57,11 +59,12 @@ const page = () => {
     try {
       let response = await axios.post(api, { cat });
       setProduct(response.data.prod);
-      console.log(response.data.prod);
+      setTotalPages(Math.ceil(response.data.prod.length / itemsPerPage));
     } catch (error) {
       console.log(error.response.data.message);
     }
   }
+  
 
   const downloadPDF = () => {
     const doc = new jsPDF();
@@ -97,6 +100,22 @@ const page = () => {
     setProduct(sortedProduct);
   }
 
+
+
+  
+
+  useEffect(()=>{
+    loadcategory();
+  },[])
+
+  const loadcategory=async()=>{
+    let api='/api/product/category';
+    const response=await axios.get(api);
+    console.log(response.data.data)
+    setcategorydata(response.data.data);
+  }
+
+
   return (
     <>
       <DashboardTopbar />
@@ -112,9 +131,11 @@ const page = () => {
             <div className='flex flex-col gap-4'>
               <select name="procat" className='border border-gray-400 rounded-lg p-3 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600' onChange={searchcategory}>
                 <option value="" className='italic text-gray-500'>---select----</option>
-                <option value="Mobile" className='text-gray-800'>Mobile</option>
-                <option value="Laptop" className='text-gray-800'>Laptop</option>
-                <option value="Tablet" className='text-gray-800'>Tablet</option>
+                {
+  categorydata.map((item,index)=>(
+  <option value={item.category}>{item.category}</option>
+  ))
+}
               </select>
             </div>
             <div className="flex justify-center mt-4">
@@ -159,8 +180,8 @@ const page = () => {
           <div className="flex justify-center mt-4">
             <button onClick={prevPage} className="px-4 py-2 mr-2 bg-gray-300 rounded-md">Prev</button>
             <select value={currentPage} onChange={handlePagination} className="px-4 py-2 border rounded-md">
-              {Array(Math.ceil(product.length / itemsPerPage)).fill(0).map((_, i) => (
-                <option key={i + 1} value={i + 1}>{i + 1}</option>
+              {Array(totalPages).fill(0).map((_, i) => (
+                <option key={i + 1} value={i + 1}>{i + 1} of {totalPages}</option>
               ))}
             </select>
             <button onClick={nextPage} className="px-4 py-2 ml-2 bg-gray-300 rounded-md">Next</button>
@@ -173,5 +194,4 @@ const page = () => {
 }
 
 export default page
-
 
