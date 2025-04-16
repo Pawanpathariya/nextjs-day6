@@ -81,6 +81,10 @@ export default function Paichart() {
     });
   }, [isDark]);
 
+  useEffect(() => {
+    setIsDark(theme === 'dark');
+  }, [theme]);
+
   return (
     <canvas
       ref={canvas}

@@ -6,6 +6,7 @@ export async function POST(req) {
     const data = await req.json();
     console.log(data);
     const { proname, probrand, procat, prodesc, proprice, imageurl } = data;
+    console.log(data)
     const myproduct = await Product.create({
       proname,
       probrand,

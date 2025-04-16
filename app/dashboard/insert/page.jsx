@@ -1,17 +1,23 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import DashboardTopbar from '@/app/component/DashboardTopbar' 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/app/component/Sidebar'
 import axios from 'axios'
 import { useTheme } from 'next-themes';
 
 const page = () => {
-  const [product, setProduct] = useState({})
+  const [inputs, setInputs] = useState({
+    proname: '',
+    probrand: '',
+    procat: '',
+    prodesc: '',
+    proprice: 0,
+    proimg: '',
+  })
+  const [categorydata, setcategorydata] = useState([]);
   const [filename, setFilename] = useState('');
   const [image, setImage] = useState(null);
-  const [categorydata, setcategorydata] = useState([]);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -32,16 +38,8 @@ const page = () => {
     const api1 = 'https://api.cloudinary.com/v1_1/dbwpnzi57/image/upload';
     const response1 = await axios.post(api1, formData);
     const api = "/api/product";
-    const response = await axios.post(api, { ...product, imageurl: response1.data.url });
-    console.log(response.data);
+    const response = await axios.post(api, { ...inputs, imageurl: response1.data.url });
     alert(response.data.message)
-    setProduct({
-      proname: '',
-      probrand: '',
-      procat: '',
-      prodesc: '',
-      proprice: '',
-    });
   }
 
   useEffect(() => {
@@ -51,7 +49,6 @@ const page = () => {
   const loadcategory = async () => {
     let api = '/api/product/category';
     const response = await axios.get(api);
-    console.log(response.data.data)
     setcategorydata(response.data.data);
   }
 
@@ -66,24 +63,30 @@ const page = () => {
           <div className={`p-4 rounded-md shadow-md mt-5 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
             <h1 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Insert</h1>
             <form className={`mt-4 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-1 gap-4 ${theme === 'dark' ? 'text-white,bg-white' : 'text-gray-900'}`}>
-              {['Product Name:', 'Product Brand:', 'Product Price:', 'Product Description:'].map((label, i) => (
-                <div key={i} className='flex flex-col gap-2'>
-                  <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{label}</label>
-                  {label === 'Product Description:' ? (
-                    <textarea name={`pro${label.split(' ')[1].toLowerCase()}`} className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} rows="3" value={product[`pro${label.split(' ')[1].toLowerCase()}`]} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} />
-                  ) : (
-                    <input type="text" name={`pro${label.split(' ')[1].toLowerCase()}`} className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={product[`pro${label.split(' ')[1].toLowerCase()}`]} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} />
-                  )}
-                </div>
-              ))}
+              <div className='flex flex-col gap-2'>
+                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Name:</label>
+                <input type="text" name="proname" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.proname} onChange={(e) => setInputs({ ...inputs, proname: e.target.value })} />
+              </div>
+              <div className='flex flex-col gap-2'>
+                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Brand:</label>
+                <input type="text" name="probrand" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.probrand} onChange={(e) => setInputs({ ...inputs, probrand: e.target.value })} />
+              </div>
+              <div className='flex flex-col gap-2'>
+                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Price:</label>
+                <input type="number" name="proprice" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.proprice} onChange={(e) => setInputs({ ...inputs, proprice: Number(e.target.value) })} />
+              </div>
               <div className='flex flex-col gap-2'>
                 <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Category:</label>
-                <select name="procat" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={product.procat} onChange={(e) => setProduct({ ...product, [e.target.name]: e.target.value })} >
+                <select name="procat" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.procat} onChange={(e) => setInputs({ ...inputs, procat: e.target.value })} >
                   <option value="">---select----</option>
                   {categorydata.map((item, index) => (
                     <option key={index} value={item.category}>{item.category}</option>
                   ))}
                 </select>
+              </div>
+              <div className='flex flex-col gap-2'>
+                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Description:</label>
+                <textarea name="prodesc" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} rows="3" value={inputs.prodesc} onChange={(e) => setInputs({ ...inputs, prodesc: e.target.value })} />
               </div>
               <div className='flex flex-col gap-2'>
                 <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Image:</label>
