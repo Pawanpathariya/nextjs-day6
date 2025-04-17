@@ -53,53 +53,45 @@ const page = () => {
   }
 
   return (
-    <>
-      <DashboardTopbar />
-      <div className='flex flex-col lg:flex-row lg:gap-x-5 gap-y-5 lg:gap-y-0'>
-        <div className='w-full lg:w-1/3 lg:max-w-[300px]'>
-          <Sidebar />
-        </div>
-        <div className='w-full lg:w-2/3 lg:max-w-[800px] mt-2'>
-          <div className={`p-4 rounded-md shadow-md mt-5 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
-            <h1 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Insert</h1>
-            <form className={`mt-4 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-1 gap-4 ${theme === 'dark' ? 'text-white,bg-white' : 'text-gray-900'}`}>
-              <div className='flex flex-col gap-2'>
-                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Name:</label>
-                <input type="text" name="proname" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.proname} onChange={(e) => setInputs({ ...inputs, proname: e.target.value })} />
+
+          <div className="p-4 rounded-md shadow-md mt-5">
+            <h1 className="text-2xl font-semibold">Insert</h1>
+            <form className="mt-4 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-1 gap-4" onSubmit={handlesubmit}>
+              <div className="flex flex-col gap-2">
+                <label className="block">Product Name:</label>
+                <input type="text" name="proname" className="border rounded-md p-2 w-full" value={inputs.proname} onChange={(e) => setInputs({ ...inputs, proname: e.target.value })} />
               </div>
-              <div className='flex flex-col gap-2'>
-                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Brand:</label>
-                <input type="text" name="probrand" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.probrand} onChange={(e) => setInputs({ ...inputs, probrand: e.target.value })} />
+              <div className="flex flex-col gap-2">
+                <label className="block">Product Brand:</label>
+                <input type="text" name="probrand" className="border rounded-md p-2 w-full" value={inputs.probrand} onChange={(e) => setInputs({ ...inputs, probrand: e.target.value })} />
               </div>
-              <div className='flex flex-col gap-2'>
-                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Price:</label>
-                <input type="number" name="proprice" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.proprice} onChange={(e) => setInputs({ ...inputs, proprice: Number(e.target.value) })} />
+              <div className="flex flex-col gap-2">
+                <label className="block">Product Price:</label>
+                <input type="number" name="proprice" className="border rounded-md p-2 w-full" value={inputs.proprice} onChange={(e) => setInputs({ ...inputs, proprice: Number(e.target.value) })} />
               </div>
-              <div className='flex flex-col gap-2'>
-                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Category:</label>
-                <select name="procat" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} value={inputs.procat} onChange={(e) => setInputs({ ...inputs, procat: e.target.value })} >
+              <div className="flex flex-col gap-2">
+                <label className="block">Product Category:</label>
+                <select name="procat" className="border rounded-md p-2 w-full" value={inputs.procat} onChange={(e) => setInputs({ ...inputs, procat: e.target.value })} >
                   <option value="">---select----</option>
                   {categorydata.map((item, index) => (
                     <option key={index} value={item.category}>{item.category}</option>
                   ))}
                 </select>
               </div>
-              <div className='flex flex-col gap-2'>
-                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Description:</label>
-                <textarea name="prodesc" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} rows="3" value={inputs.prodesc} onChange={(e) => setInputs({ ...inputs, prodesc: e.target.value })} />
+              <div className="flex flex-col gap-2">
+                <label className="block">Product Description:</label>
+                <textarea name="prodesc" className="border rounded-md p-2 w-full" rows="3" value={inputs.prodesc} onChange={(e) => setInputs({ ...inputs, prodesc: e.target.value })} />
               </div>
-              <div className='flex flex-col gap-2'>
-                <label className={`block ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Image:</label>
-                <input type="file" name="proimg" className={`border rounded-md p-2 w-full ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`} onChange={handleFileChange} />
+              <div className="flex flex-col gap-2">
+                <label className="block">Product Image:</label>
+                <input type="file" name="proimg" className="border rounded-md p-2 w-full" onChange={handleFileChange} />
               </div>
-              <button className={`font-bold py-2 px-4 rounded-md ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-800 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-900'}`} onClick={handlesubmit}>
+              <button className="font-bold py-2 px-4 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-900">
                 Submit
               </button>
             </form>
           </div>
-        </div>
-      </div>
-    </>
+      
   )
 }
 

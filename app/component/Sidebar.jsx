@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+const Sidebar = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
 
   const toggleSidebar = () => {
@@ -19,7 +19,7 @@ const Sidebar = () => {
         ☰
       </button>
       <div
-        className={`fixed top-0 left-0 h-screen w-64 bg-${theme === 'dark' ? 'gray-800' : 'white'} p-4 mt-18 transition-transform transform ${
+        className={`absolute top-0 left-0 h-screen w-64 bg-${theme === 'dark' ? 'gray-800' : 'white'} p-4 mt-18 transition-transform transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ marginRight: isOpen ? 0 : '64px' }}
@@ -49,6 +49,7 @@ const Sidebar = () => {
           </ul>
         </div>
       </div>
+      {isOpen ? <div className="ml-64">{children}</div> :null }
     </>
   );
 };
